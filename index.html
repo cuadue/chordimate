@@ -33,10 +33,18 @@
         </div>
         <script src='jquery-1.7.2.min.js'></script>
         <script src='bootstrap/js/bootstrap.js'></script>
+        <script src='notes.js'></script>
         <script src='main.js'></script>
         <script>
             $(function() {
                 $('#fretboard').chordimate()
+
+                var c_maj = notes.make_scale('C', 'major')
+                console.log(c_maj)
+                var a_min = notes.make_scale('Ab', 'minor', 'desc')
+                console.log(a_min)
+
+                $('#fretboard').chordimate('change', c_maj)
             })
         </script>
     </body>
