@@ -6,29 +6,41 @@
 !function($) {
     var methods = {
         init: function(opts) {
-            var data = $(this).data('chordimate')
-            data.settings = $.extend({
+            var settings = $.extend({
                 tuning: 'e a d g b e',
-                frets: 12
+                frets: 13
             }, opts)
 
             settings.tuning = notes.parse_notes(settings.tuning)
+            $(this).data(settings)
 
-            this.$table = $('<table>')
+            var $table = $('<table>')
             // Add the strings as rows
-            for (var i = 0; i < settings.tuning; i++) {
-                var $tr = $('<tr data-string=' + i + '>')
-                $tr.append($('<td>' + settings.tuning[i] + '</td>'))
+            for (var i = settings.tuning.length-1; i >= 0; i--) {
+                var name = settings.tuning[i] 
+                var string_ord = notes.note_ord(name)
+
+                var $tr = $('<tr data-string=' + name + '/>')
+                $table.append($tr)
                 // Add the frets as columns
                 for (var k = 0; k < settings.frets; k++) {
-                    $tr.append($('<td data-fret=' + k + '>'))
+                    var note = notes.note_name(string_ord + k)
+                    var $td = $('<td>').append(
+                        $('<div>').attr('data-note', note).text(note))
+
+                    $tr.append($td)
                 }
-                this.$table.append($tr)
             }
-            return this.append(this.$table)
+
+            return $(this).append($table)
         },
         change: function(notes) {
-            this.$table.text(notes.join(' '))
+            var $that = $(this)
+            $that.find('[data-note]').fadeOut()
+            $.each(notes, function(index, name) {
+                console.log(name)
+                $that.find('[data-note="' + name + '"]').fadeIn()
+            })
             return this
         }
     }

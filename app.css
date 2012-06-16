@@ -10,3 +10,37 @@ body {
     padding: 35px 0;
 }
 
+#main {
+    text-align: center;
+}
+
+#fretboard {
+    display: inline-block;
+}
+
+#fretboard td {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-left: 3px solid black;
+}
+
+#fretboard tr {
+    border-bottom: 1px solid black;
+}
+
+[data-note] {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 50%;
+    left: 50%;
+    line-height: 30px;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    text-shadow: -1px -1px 1px black;
+    background-color: #352;
+    font-size: 15px;
+}
+

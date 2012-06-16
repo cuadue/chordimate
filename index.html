@@ -10,14 +10,7 @@
         <div class='navbar navbar-fixed-top'>
             <div class='navbar-inner'>
                 <div class='container'>
-                    <!-- No idea what this is for. Maybe remove? -->
-                    <a class='btn btn-navbar' data-toggle='collapse'
-                            data-target='.nav-collapse'>
-                        <span class='icon-bar'></span>
-                        <span class='icon-bar'></span>
-                        <span class='icon-bar'></span>
-                    </a>
-                    <a class='brand' href='/'>Move Along</a>
+                    <a class='brand' href='/'>Chordimate</a>
                     <div id='nav-links' class='nav-collapse collapse'>
                         <ul class='nav'>
                             <li><a href='#'>Home</a></li>
@@ -27,7 +20,7 @@
             </div>
         </div>
 
-        <div class='container'>
+        <div id='main' class='container'>
             <div id='fretboard'>
             </div>
         </div>
@@ -40,9 +33,7 @@
                 $('#fretboard').chordimate()
 
                 var c_maj = notes.make_scale('C', 'major')
-                console.log(c_maj)
                 var a_min = notes.make_scale('Ab', 'minor', 'desc')
-                console.log(a_min)
 
                 $('#fretboard').chordimate('change', c_maj)
             })

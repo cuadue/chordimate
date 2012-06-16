@@ -12,7 +12,8 @@ notes = (function() {
             return (desc && desc_ords || asc_ords)[name]
         },
         note_name: function(ord, desc) {
-            return (desc && desc_names || asc_names)[ord]
+            var names = desc && desc_names || asc_names
+            return names[ord % names.length]
         },
         parse_notes: function(s) {
             // convenience function. Given 'a b cb', returns ['A', 'B', 'Cb']
@@ -25,10 +26,7 @@ notes = (function() {
             // with a sharp root
             var root_ord = methods.note_ord(root, desc)
             return _modes[mode].map(function(interval) {
-                // Not ideal to use asc_names here but it has the same
-                // length as desc_names.
-                var ord = (root_ord + interval) % asc_names.length
-                return methods.note_name(ord, desc)
+                return methods.note_name(root_ord + interval, desc)
             })
         }
     }
