@@ -1,3 +1,5 @@
+// Copyright 2012 Wes Waugh
+// MIT License, see LICENSE file for details
 !function($) {
     var up_count = ['C', 'C#', 'D', 'D#', 'E', 'F', 
                     'F#', 'G', 'G#', 'A', 'A#', 'B'],

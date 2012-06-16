@@ -24,7 +24,7 @@ user could, for example:
 4. Type those chords into *Chordimate* and line up the timing.
 5. Send that score to the rest of the band
 
-# The Tech
 Depends only on jQuery. Draws and animates with CSS.
 
+[MIT License](http://www.opensource.org/licenses/mit-license.php)
 
