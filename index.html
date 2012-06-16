@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html lang='en'>
+    <head>
+        <title>Chordimate</title>
+        <link rel='stylesheet' href='bootstrap/css/bootstrap.css'>
+        <link rel='stylesheet' href='app.css'>
+    </head>
+    <body data-spy='scroll' data-target='.subnav' data-offset='50'>
+        <!-- Navbar -->
+        <div class='navbar navbar-fixed-top'>
+            <div class='navbar-inner'>
+                <div class='container'>
+                    <!-- No idea what this is for. Maybe remove? -->
+                    <a class='btn btn-navbar' data-toggle='collapse'
+                            data-target='.nav-collapse'>
+                        <span class='icon-bar'></span>
+                        <span class='icon-bar'></span>
+                        <span class='icon-bar'></span>
+                    </a>
+                    <a class='brand' href='/'>Move Along</a>
+                    <div id='nav-links' class='nav-collapse collapse'>
+                        <ul class='nav'>
+                            <li><a href='#'>Home</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class='container'>
+            <div id='fretboard'>
+            </div>
+        </div>
+        <script src='jquery-1.7.2.min.js'></script>
+        <script src='bootstrap/js/bootstrap.js'></script>
+        <script src='main.js'></script>
+        <script>
+            $(function() {
+                $('#fretboard').chordimate()
+            })
+        </script>
+    </body>
+</html>
+
