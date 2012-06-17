@@ -46,16 +46,16 @@
         <script src='jquery-1.7.2.min.js'></script>
         <script src='bootstrap/js/bootstrap.js'></script>
         <script src='raphael.js'></script>
-        <script src='notes.js'></script>
         <script src='main.js'></script>
         <script>
             $(function() {
                 $('#fretboard').chordimate({ bg_texture: 'wood-texture.jpg' })
+                notes = $.fn.chordimate
 
                 keys = {
-                    'C Major': notes.make_scale('C', 'major'),
-                    'G minor': notes.make_scale('G', 'minor', 'desc'),
-                    'Bb minor': notes.make_scale('Bb', 'minor', 'desc')
+                    'C Major': notes('make_scale', 'C', 'major'),
+                    'G minor': notes('make_scale', 'G', 'minor', 'desc'),
+                    'Bb minor': notes('make_scale', 'Bb', 'minor', 'desc')
                 }
 
                 $.each(keys, function(k, v) {
@@ -73,7 +73,7 @@
                     $('#show_other_scale').trigger('click')
                 })
                 $('#show_other_scale').click(function() {
-                    var scale = notes.parse_notes($('#other_scale').val())
+                    var scale = notes('parse_notes', $('#other_scale').val())
                     $('#fretboard').chordimate('change', scale)
                 })
                 $('#clear').click(function() {
