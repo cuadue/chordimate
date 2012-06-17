@@ -10,22 +10,39 @@
         <div class='navbar navbar-fixed-top'>
             <div class='navbar-inner'>
                 <div class='container'>
-                    <a class='brand' href='/'>Chordimate</a>
-                    <div id='nav-links' class='nav-collapse collapse'>
-                        <ul class='nav'>
-                            <li><a href='#'>Home</a></li>
-                        </ul>
-                    </div>
+                    <a class='brand' href='#'>Chordimate</a>
                 </div>
             </div>
         </div>
 
         <div id='main' class='container'>
+            <p>Smoothest animation in <a href='http://google.com/chrome'>Chrome</a> or
+                <a href='http://apple.com/safari'>Safari</a></p>
+            <h3>Show me a scale!</h3>
+            <div class='btn-group' id='scale_list'>
+                <button class='btn'id='clear'>Nevermind, I hate music</button>
+            </div>
+            <br>
+            <form class='form-inline' id='other_scale_form' action='#'>
+                <label>Something else (looking like "<tt>a b c db c# g</tt>"):
+                    <input type='text' id='other_scale'></input>
+                </label>
+                <input class='btn' type='button' id='show_other_scale' value='Do It!'></input>
+            </form>
+            <hr>
             <div id='fretboard'>
             </div>
-            <a id='cmajor'>C Major</a>
-            <a id='aminor'>Ab minor</a>
         </div>
+        <hr>
+        <footer>
+            <a href='http://wes-waugh.com/'>Wes Waugh</a>
+            &middot;
+            <a href='http://twitter.com/cuadue'>@cuadue</a>
+            &middot;
+            <a href='http://www.opensource.org/licenses/mit-license.php'>MIT License</a>
+            &middot;
+            <a href='https://github.com/cuadue/chordimate'>Git Repository</a>
+        </footer>
         <script src='jquery-1.7.2.min.js'></script>
         <script src='bootstrap/js/bootstrap.js'></script>
         <script src='raphael.js'></script>
@@ -33,16 +50,34 @@
         <script src='main.js'></script>
         <script>
             $(function() {
-                $('#fretboard').chordimate()
+                $('#fretboard').chordimate({ bg_texture: 'wood-texture.jpg' })
 
-                var c_maj = notes.make_scale('C', 'major')
-                var ab_min = notes.make_scale('G', 'minor', 'desc')
+                keys = {
+                    'C Major': notes.make_scale('C', 'major'),
+                    'G minor': notes.make_scale('G', 'minor', 'desc'),
+                    'Bb minor': notes.make_scale('Bb', 'minor', 'desc')
+                }
 
-                $('#cmajor').click(function() {
-                    $('#fretboard').chordimate('change', c_maj)
+                $.each(keys, function(k, v) {
+                    $('#scale_list').append($('<button>').
+                        attr('id', k).
+                        text(k).addClass('btn').click(function() {
+                            $('#fretboard').chordimate('change', v)
+                        }))
                 })
-                $('#aminor').click(function() {
-                    $('#fretboard').chordimate('change', ab_min)
+
+                $('[id="C Major"]').trigger('click')
+
+                $('#other_scale_form').submit(function(e) {
+                    e.preventDefault()
+                    $('#show_other_scale').trigger('click')
+                })
+                $('#show_other_scale').click(function() {
+                    var scale = notes.parse_notes($('#other_scale').val())
+                    $('#fretboard').chordimate('change', scale)
+                })
+                $('#clear').click(function() {
+                    $('#fretboard').chordimate('clear')
                 })
             })
         </script>

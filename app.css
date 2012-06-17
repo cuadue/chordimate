@@ -10,10 +10,6 @@ body {
     padding: 35px 0;
 }
 
-#main {
-    text-align: center;
-}
-
 #fretboard {
     display: inline-block;
 }
@@ -42,5 +38,9 @@ body {
     text-shadow: -1px -1px 1px black;
     background-color: #352;
     font-size: 15px;
+}
+
+footer {
+    text-align: center;
 }
 

@@ -27,23 +27,45 @@ Array.prototype.diff = function(a) {
                 height: 300,
                 tuning: 'e a d g b e',
                 frets: 13,
+                fret_attr: {
+                    'stroke-linecap': 'round',
+                    'stroke-width': 5,
+                     stroke: '#444',
+                },
                 small_inlays: [3, 5, 7, 9],
                 large_inlays: [12],
+                inlay_attr: {
+                    stroke: '',
+                    fill: '#eee'
+                },
                 inlay_radius: 7,
                 padding_left: 50,
                 padding_bottom: 16,
-                font_size: 20,
-                bridge_stroke_width: 10,
-                bridge_stroke_linecap: 'round',
-                line_stroke_width: 2,
+                font_size: 15,
+                bridge_attr: {
+                    'stroke-linecap': 'round',
+                    'stroke-width': 10,
+                },
                 note_radius: 15,
-                circle_start: {opacity: 0, fill: '#ccc'},
-                label_start: {opacity: 0, fill: 'black'},
+                circle_start: {
+                    opacity: 0, 
+                    fill: '#392'
+                },
+                label_start: {
+                    opacity: 0, 
+                    fill: 'white'
+                },
                 animate_in: function(e) {
-                    e.animate({opacity: 0.7, transform: 's1,1'}, 200, 'linear')
+                    e.animate({
+                        opacity: 0.7, 
+                        transform: 's1,1'
+                    }, 200, 'linear')
                 },
                 animate_out: function(e) {
-                    e.animate({opacity: 0, transform: 's0.2'}, 200, 'linear')
+                    e.animate({
+                        opacity: 0, 
+                        transform: 's0.2'
+                    }, 200, 'linear')
                 }
             }, options)
 
@@ -59,6 +81,14 @@ Array.prototype.diff = function(a) {
             }
 
             // Draw static
+            if (obj.bg_texture) {
+                var x = obj.padding_left + obj.fret_width,
+                    y = obj.string_height/2,
+                    w = obj.width - x
+                    h = obj.height - obj.padding_bottom - obj.string_height
+                obj.r.image(obj.bg_texture, x, y, w, h)
+            }
+                        
             // Each string
             var len = obj.tuning.length
             for (var i = 0; i < len; i++) {
@@ -84,9 +114,7 @@ Array.prototype.diff = function(a) {
             var x = obj.padding_left + obj.fret_width
             var y1 = obj.string_height / 2
             var y2 = obj.height - obj.padding_bottom - obj.string_height / 2
-            obj.r.vexLine(x, y1, x, y2).attr('stroke-width', 
-                obj.bridge_stroke_width).attr('stroke-linecap',
-                obj.bridge_stroke_linecap)
+            obj.r.vexLine(x, y1, x, y2).attr(obj.bridge_attr)
 
             // Draw frets 
             for (var i = 0; i < obj.frets; i++) {
@@ -94,8 +122,7 @@ Array.prototype.diff = function(a) {
                 var note = notes.note_name(string_ord + i)
                 // Remember that fret 0 is the open string, hence the i+1
                 x = obj.padding_left + (i+1) * obj.fret_width
-                obj.r.vexLine(x, y1, x, y2).attr('stroke-width',
-                                                 obj.fret_stroke_width)
+                obj.r.vexLine(x, y1, x, y2).attr(obj.fret_attr)
             }
 
             // Draw small inlays
@@ -103,7 +130,7 @@ Array.prototype.diff = function(a) {
                 x = obj.padding_left + (obj.small_inlays[i] + 0.5) *
                     obj.fret_width
                 var y = (obj.height - obj.padding_bottom) / 2
-                obj.r.circle(x, y, obj.inlay_radius).attr('fill', 'black')
+                obj.r.circle(x, y, obj.inlay_radius).attr(obj.inlay_attr)
             }
 
             // Draw large inlays
@@ -112,8 +139,8 @@ Array.prototype.diff = function(a) {
                     obj.fret_width
                 var y = (obj.height - obj.padding_bottom) / 2
                 var r = obj.inlay_radius
-                obj.r.circle(x, y - obj.string_height, r).attr('fill', 'black')
-                obj.r.circle(x, y + obj.string_height, r).attr('fill', 'black')
+                obj.r.circle(x, y - obj.string_height, r).attr(obj.inlay_attr)
+                obj.r.circle(x, y + obj.string_height, r).attr(obj.inlay_attr)
             }
 
             function default_list_push(arr, key, val) {
@@ -189,6 +216,9 @@ Array.prototype.diff = function(a) {
             obj.scale_names = new_names
             $(this).data(obj)
             return this
+        },
+        clear: function() {
+            return $(this).chordimate('change', [])
         }
     }
 

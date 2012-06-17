@@ -1,5 +1,30 @@
-*Chordimate* animates chords, modes, and scales on a guitar fretboard.
+# Chordimate (Chord Animate)
+*Chordimate* is a jQuery plugin to display and animate chords, modes, and
+scales on a guitar fretboard.
 
+# Requires 
+[jQuery](http://jquery.com), [Raphael](http://raphaeljs.com) and 
+(unfortunately) Google Chrome. It just runs too slow in Firefox and Opera.
+
+# Usage
+``` javascript
+    $(function() {
+        $('#fretboard').chordimate()
+
+        // Right now the plugin pollutes the global namespace with `notes`
+        var c_maj = notes.make_scale('C', 'major')
+        var g_min = notes.make_scale('G', 'minor', 'desc')
+
+        $('#cmajor').click(function() {
+            $('#fretboard').chordimate('change', c_maj)
+        })
+        $('#gmin').click(function() {
+            $('#fretboard').chordimate('change', g_min)
+        })
+    })
+```
+
+# Motivation
 I don't claim that traditional music notation is dead, but its learning curve
 is steep. Tablature is more acessable, but it's limited:
 
@@ -24,10 +49,7 @@ user could, for example:
 4. Type those chords into *Chordimate* and line up the timing.
 5. Send that score to the rest of the band
 
-Requires [jQuery](http://jquery.com) and [Raphael](http://raphaeljs.com). 
 
-**Runs best in Google Chrome**. If you use anything else, you're going to have
-a bad time.
 
 [MIT License](http://www.opensource.org/licenses/mit-license.php)
 
