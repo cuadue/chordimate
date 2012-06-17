@@ -119,12 +119,11 @@ Array.prototype.diff = function(a) {
                                (1 - Math.pow(2, -obj.num_frets/12))
 
             function fret_position(fret_num) {
-                // Equation for fret position d
-                return obj.scale_length * (1 - Math.pow(2, -fret_num/12))
+                return obj.padding_left + obj.scale_length * 
+                       (1 - Math.pow(2, -fret_num/12))
             }
 
             function fret_midpoint(n) {
-                // Where to place the circle
                 return (fret_position(n) + fret_position(n+1)) / 2
             }
 
@@ -137,14 +136,14 @@ Array.prototype.diff = function(a) {
 
             // Draw static
             if (obj.bg_texture) {
-                var x = obj.padding_left + fret_position(1)
+                var x = fret_position(1)
                     y = obj.string_height/2,
                     w = obj.width - x
                     h = obj.height - obj.padding_bottom - obj.string_height
                 obj.r.image(obj.bg_texture, x, y, w, h)
             }
                         
-            // Each string
+            // Each guitar string
             var len = obj.tuning.length
             for (var i = 0; i < len; i++) {
                 // Draw tuning labels
@@ -157,7 +156,7 @@ Array.prototype.diff = function(a) {
 
                 // Draw the string
                 // Remember fret 0 is the open string
-                x1 = obj.padding_left + fret_position(1)
+                x1 = fret_position(1)
                 var x2 = obj.width
                 obj.r.vexLine(x1, y, x2, y).attr('stroke-width',
                                                  obj.string_stroke_width)
@@ -166,7 +165,7 @@ Array.prototype.diff = function(a) {
             // Draw the neck bridge
             // Remember fret 0 is the open string, so the bridge goes between
             // frets 0 and 1
-            var x = obj.padding_left + fret_position(1)
+            var x = fret_position(1)
             var y1 = obj.string_height / 2
             var y2 = obj.height - obj.padding_bottom - obj.string_height / 2
             obj.r.vexLine(x, y1, x, y2).attr(obj.bridge_attr)
@@ -176,14 +175,14 @@ Array.prototype.diff = function(a) {
                 // Use the same y-values as the neck bridge
                 var note = methods.note_name(string_ord + i)
                 // Remember that fret 0 is the open string, hence the i+1
-                x = obj.padding_left + fret_position(i + 1)
+                x = fret_position(i + 1)
                 obj.r.vexLine(x, y1, x, y2).attr(obj.fret_attr)
             }
 
             // Draw small inlays
             for (var i = 0; i < obj.small_inlays.length; i++) {
                 var fret_num = obj.small_inlays[i] 
-                x = obj.padding_left + fret_midpoint(fret_num)
+                x = fret_midpoint(fret_num)
                 var y = (obj.height - obj.padding_bottom) / 2
                 obj.r.circle(x, y, obj.inlay_radius).attr(obj.inlay_attr)
             }
@@ -191,7 +190,7 @@ Array.prototype.diff = function(a) {
             // Draw large inlays
             for (var i = 0; i < obj.large_inlays.length; i++) {
                 var fret_num = obj.large_inlays[i] 
-                x = obj.padding_left + fret_midpoint(fret_num)
+                x = fret_midpoint(fret_num)
 
                 var y = (obj.height - obj.padding_bottom) / 2
                 var r = obj.inlay_radius
@@ -212,9 +211,8 @@ Array.prototype.diff = function(a) {
                 default_list_push(obj.label_by_name, name, label)
             }
 
-            // Create the dots and labels
-            // Remember that strings are drawn in reverse order so mirror the
-            // positions about the x-axis
+            // Create the dots and labels. Remember that strings are drawn in
+            // reverse order so mirror the positions about the x-axis
             len = obj.tuning.length
             obj.dots_by_ord = {}
             obj.label_by_name = {}
@@ -225,14 +223,19 @@ Array.prototype.diff = function(a) {
 
                 for (var f = 0; f < obj.num_frets; f++) {
                     var fret_ord = methods.interval_ord(open_ord, f)
-                    var x = obj.padding_left + fret_midpoint(f)
+                    // Finger just barely overlaps the fret
+                    var x = fret_position(f + 1) - obj.note_radius + 4
 
                     var dot = obj.r.circle(x, y, obj.note_radius)
                     dot.attr(obj.circle_start)
                     default_list_push(obj.dots_by_ord, fret_ord, dot)
                     
+                    // Ascending names
                     make_label(fret_ord, x, y)
-                    make_label(fret_ord, x, y, 'desc')
+                    // Don't add a redundant label for the same name
+                    if (methods.note_name(fret_ord) !== 
+                        methods.note_name(fret_ord, 'desc'))
+                            make_label(fret_ord, x, y, 'desc')
                 }
             }
 
@@ -251,12 +254,7 @@ Array.prototype.diff = function(a) {
                     $.map(left.diff(right), function(key) {
                         return list[key]
                     }), 
-                    function(l) {
-                        if ($.isArray(l))
-                            $.map(l, fn)
-                        else
-                            fn(l)
-                    })
+                    function(l) { $.isArray(l) && $.map(l, fn) || fn(l) })
             }
             
             apply_diff(old_names, new_names, obj.label_by_name,
@@ -268,6 +266,8 @@ Array.prototype.diff = function(a) {
                         obj.animate_out)
             apply_diff(new_ords, old_ords, obj.dots_by_ord,
                         obj.animate_in)
+
+            // TODO add highlighting for parts of the chord
 
             obj.scale_names = new_names
             $(this).data(obj)
