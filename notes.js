@@ -11,6 +11,9 @@ notes = (function() {
         note_ord: function(name) {
             return $.extend({}, desc_ords, asc_ords)[name]
         },
+        note_ords: function(names) {
+            return $.map(names, methods.note_ord)
+        },
         note_name: function(ord, desc) {
             var names = desc && desc_names || asc_names
             return names[ord % names.length]
