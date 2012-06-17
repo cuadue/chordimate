@@ -40,8 +40,7 @@ Array.prototype.diff = function(a) {
             })
         },
         make_scale: function(root, mode, desc) {
-            // TODO this fails if you want to make a descending
-            // scale with a sharp root
+            desc = desc && desc || root[1] === 'b'
             var root_ord = methods.note_ord(root, desc)
             return _modes[mode].map(function(interval) {
                 return methods.note_name(root_ord + interval, desc)
@@ -71,7 +70,7 @@ Array.prototype.diff = function(a) {
                 inlay_radius: 7,
                 padding_left: 30,
                 padding_bottom: 0,
-                font_size: 13,
+                font_size: 11,
                 bridge_attr: {
                     'stroke-linecap': 'round',
                     'stroke-width': 10,
@@ -246,7 +245,7 @@ Array.prototype.diff = function(a) {
             var obj = $(this).data()
             var old_names = obj.scale_names || []
             var old_ords = methods.note_ords(old_names)
-
+            
             function apply_diff(left, right, list, fn) {
                 $.map(
                     $.map(left.diff(right), function(key) {

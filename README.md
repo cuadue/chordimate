@@ -13,9 +13,8 @@ scales on a guitar fretboard.
     $(function() {
         $('#fretboard').chordimate()
 
-        // Right now the plugin pollutes the global namespace with `notes`
-        var c_maj = notes.make_scale('C', 'major')
-        var g_min = notes.make_scale('G', 'minor', 'desc')
+        var c_maj = $.fn.chordimate.make_scale('C', 'major')
+        var g_min = $.fn.chordimate.make_scale('G', 'minor', 'desc')
 
         $('#cmajor').click(function() {
             $('#fretboard').chordimate('change', c_maj)
