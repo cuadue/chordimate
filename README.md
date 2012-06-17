@@ -2,9 +2,11 @@
 *Chordimate* is a jQuery plugin to display and animate chords, modes, and
 scales on a guitar fretboard.
 
+[Live Preview](http://cuadue.github.com/chordimate)
+
 # Requires 
 [jQuery](http://jquery.com), [Raphael](http://raphaeljs.com) and 
-(unfortunately) Google Chrome. It just runs too slow in Firefox and Opera.
+(unfortunately) a Webkit browser. It just runs too slow in Firefox and Opera.
 
 # Usage
 ``` javascript
