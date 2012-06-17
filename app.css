@@ -1,0 +1,46 @@
+body {
+    background-color: white;
+    padding-top: 90px;
+    position: relative;
+}
+
+.footer {
+    border-top: 1px solid #e5e5e5;
+    margin-top: 45px;
+    padding: 35px 0;
+}
+
+#fretboard {
+    display: inline-block;
+}
+
+#fretboard td {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-left: 3px solid black;
+}
+
+#fretboard tr {
+    border-bottom: 1px solid black;
+}
+
+[data-note] {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 50%;
+    left: 50%;
+    line-height: 30px;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    text-shadow: -1px -1px 1px black;
+    background-color: #352;
+    font-size: 15px;
+}
+
+footer {
+    text-align: center;
+}
+
