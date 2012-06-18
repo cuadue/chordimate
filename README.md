@@ -13,9 +13,8 @@ scales on a guitar fretboard.
     $(function() {
         $('#fretboard').chordimate()
 
-        // Right now the plugin pollutes the global namespace with `notes`
-        var c_maj = notes.make_scale('C', 'major')
-        var g_min = notes.make_scale('G', 'minor', 'desc')
+        var c_maj = $.fn.chordimate.make_scale('C', 'major')
+        var g_min = $.fn.chordimate.make_scale('G', 'minor', 'desc')
 
         $('#cmajor').click(function() {
             $('#fretboard').chordimate('change', c_maj)
@@ -50,8 +49,6 @@ user could, for example:
 3. Fit those chords into scales or modes
 4. Type those chords into *Chordimate* and line up the timing.
 5. Send that score to the rest of the band
-
-
 
 [MIT License](http://www.opensource.org/licenses/mit-license.php)
 
