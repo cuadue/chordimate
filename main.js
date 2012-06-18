@@ -80,7 +80,7 @@ var music_theory = (function() {
             var obj = $.extend({
                 tuning: 'e a d g b e',
                 num_frets: 15,
-                inlays: [1, 3, 5, 7, 9, 12]
+                inlays: [1, 3, 5, 7, 9, 12, 15, 19]
             }, options)
 
             // Want to keep all positions in % and let the DOM handle
@@ -101,9 +101,12 @@ var music_theory = (function() {
             // width of the element. The number is used in the calculation for
             // distance from the bridge as a function of fret number (see
             // fret_position function)
-            obj.scale_length = 1 / (1 - Math.pow(2, -(obj.num_frets + 1)/12))
+            obj.scale_length = 1 / (1 - Math.pow(2, -(obj.num_frets)/12))
             function fret_position(fret_num) { 
-                return obj.scale_length * (1 - Math.pow(2, -fret_num/12.0)) *
+                // The fret_num-1 here is for pretty display only! It shifts
+                // the bridge to the element left instead of leaving a
+                // great big gap.
+                return obj.scale_length * (1 - Math.pow(2, -(fret_num - 1)/12.0)) *
                     100
             }
             function fret_space(fret_left, fret_right) {
@@ -156,6 +159,7 @@ var music_theory = (function() {
 
             // Put inlays
             $.map(obj.inlays, function(f) {
+                if (f > obj.num_frets) return
                 var w = (fret_position(f + 1) - fret_position(f)) * 0.5;
                 div('inlay', {
                     left: (fret_position(f) + fret_position(f + 1) - w) / 2 + '%',
@@ -212,30 +216,29 @@ var music_theory = (function() {
             return this
         },
         change: function(new_names) {
+            if (typeof new_names == 'string')
+                new_names = music_theory.parse_notes(new_names)
             var obj = $(this).data()
             var old_ords = obj.scale_ords || []
             var new_ords = $.map(new_names, music_theory.note_ord)
 
+            var that = $(this)
             function $el_with_ord(ord) {
-                return $('[data-ordinal=' + ord + ']')
+                return that.find('[data-ordinal=' + ord + ']')
             }
             
-            function apply_diff(left, right, fn) {
-                $.map(left.diff(right), function(ord) {
-                    return fn(ord, $el_with_ord(ord))
-                })
-            }
-            
-            apply_diff(old_ords, new_ords, function(ord, $el) {
-                $el.fadeOut()
+            $.map(old_ords.diff(new_ords), function(ord) {
+                $el_with_ord(ord).fadeOut()
             })
-            apply_diff(new_ords, old_ords, function(ord, $el) {
-                $el.fadeIn()
+
+            $.map(new_ords.diff(old_ords), function(ord) {
+                $el_with_ord(ord).fadeIn()
             })
 
             $.map(new_names, function(name) {
                 $el_with_ord(music_theory.note_ord(name)).text(name)
             })
+
 
             obj.scale_ords = new_ords
             $(this).data(obj)
