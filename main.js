@@ -197,7 +197,7 @@ var music_theory = (function() {
                         top: y + '%',
                     }).attr({
                         'data-ordinal': music_theory.interval_ord(open_ord, f)
-                    })
+                    }).hide()
                 }
             })
 
@@ -213,24 +213,31 @@ var music_theory = (function() {
         },
         change: function(new_names) {
             var obj = $(this).data()
-            var old_names = obj.scale_names || []
+            var old_ords = obj.scale_ords || []
+            var new_ords = $.map(new_names, music_theory.note_ord)
+
+            function $el_with_ord(ord) {
+                return $('[data-ordinal=' + ord + ']')
+            }
             
             function apply_diff(left, right, fn) {
-                $.map(left.diff(right), function(name) {
-                    var ord = music_theory.note_ord(name) 
-                    return fn($('[data-ordinal=' + ord + ']').text(name))
+                $.map(left.diff(right), function(ord) {
+                    return fn(ord, $el_with_ord(ord))
                 })
             }
             
-            apply_diff(old_names, new_names, function($el) {
-                // Remove
+            apply_diff(old_ords, new_ords, function(ord, $el) {
                 $el.fadeOut()
             })
-            apply_diff(new_names, old_names, function($el) {
+            apply_diff(new_ords, old_ords, function(ord, $el) {
                 $el.fadeIn()
             })
 
-            obj.scale_names = new_names
+            $.map(new_names, function(name) {
+                $el_with_ord(music_theory.note_ord(name)).text(name)
+            })
+
+            obj.scale_ords = new_ords
             $(this).data(obj)
             return this
         },

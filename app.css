@@ -52,6 +52,7 @@ body {
 }
 
 #fretboard .fret, #fretboard .bridge {
+    margin-left: -2px;
     width: 4px;
     border-radius: 6px;
     background: #bbb;
