@@ -6,7 +6,7 @@
         <link rel='stylesheet' href='app.css'>
     </head>
     <body data-spy='scroll' data-target='.subnav' data-offset='50'>
-        <!-- Navbar -->
+        <!-- Navbar
         <div class='navbar navbar-fixed-top'>
             <div class='navbar-inner'>
                 <div class='container'>
@@ -14,11 +14,27 @@
                 </div>
             </div>
         </div>
+        -->
 
         <div id='main' class='container'>
-            <p>Smoothest animation in <a href='http://google.com/chrome'>Chrome</a> or
-                <a href='http://apple.com/safari'>Safari</a></p>
-            <h3>Show me a scale!</h3>
+            <h1>Chordimate Animates Guitar Chords</h1>
+            <div class=chordimate id=silly-fretboard></div>
+            <p>Because the linguistic creativity of hackers is frequently
+               limited to puns and portmanteaus, "Chordimate" is what you get
+               from smushing together "chord" and "animate".</p>
+            <p>Chordimate is a jQuery plugin which renders a guitar fretboard,
+               displaying the name and position of a set of notes (e.g.
+               scales, chords, modes, but herein called a "scale").  </p>
+            <div class=chordimate id=little-fretboard></div>
+            <p>The fun part is animating it from one scale to another. It 
+               supports arbitrary tuning (at time of plugin initialization)
+               and can be dynamically rescaled using CSS alone. Styling is
+               all CSS so it's easily customizable without hitting
+               JavaScript.</p>
+            <p>Chordimate is MIT licensed. <a
+            href='https://github.com/cuadue/chordimate'>Git the source</a></p>
+
+            <h3>Interactive Animated Demo</h3>
             <div class='btn-group' id='scale_list'>
             </div>
             <br>
@@ -29,8 +45,9 @@
                 <input class='btn' type='button' id='show_other_scale' value='Do It!'></input>
             </form>
             <hr>
-            <div id='fretboard'>
+            <div class=chordimate id=fretboard>
             </div>
+            <hr>
         </div>
         <hr>
         <footer>
@@ -45,20 +62,30 @@
         <script src='jquery-1.7.2.js'></script>
         <script src='bootstrap/js/bootstrap.js'></script>
         <script src='main.js'></script>
+        <style>
+            #little-fretboard {
+                width: 250px;
+                height: 100px;
+            }
+
+            #silly-fretboard {
+                width: 800px;
+                height: 150px;
+            }
+        </style>
         <script>
             $(function() {
-                $('#fretboard').chordimate({ bg_texture: 'wood-texture.jpg' })
-                notes = $.fn.chordimate
+                $('#fretboard').chordimate()
+                $('#little-fretboard').chordimate({ num_frets: 5 })
+                $('#silly-fretboard').chordimate({ num_frets: 25 })
 
-                keys = {
-                    'C Major': music_theory.make_scale('C', 'major'),
+                $.each({
                     'C# Major': music_theory.make_scale('C#', 'major'),
+                    'C Major': music_theory.make_scale('C', 'major'),
                     'Db Major': music_theory.make_scale('Db', 'major'),
                     'G minor': music_theory.make_scale('G', 'minor', 'desc'),
                     'Bb minor': music_theory.make_scale('Bb', 'minor', 'desc')
-                }
-
-                $.each(keys, function(k, v) {
+                }, function(k, v) {
                     $('#scale_list').append($('<button>').
                         attr('id', k).
                         text(k).addClass('btn').click(function() {
@@ -73,8 +100,7 @@
                     $('#show_other_scale').trigger('click')
                 })
                 $('#show_other_scale').click(function() {
-                    var scale = notes('parse_notes', $('#other_scale').val())
-                    $('#fretboard').chordimate('change', scale)
+                    $('#fretboard').chordimate('change', $('#other_scale').val())
                 })
                 $('#clear').click(function() {
                     $('#fretboard').chordimate('clear')
