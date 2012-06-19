@@ -110,6 +110,10 @@ body {
     border-radius: 2px;
 }
 
+.chordimate .degree-0 {
+    background: green;
+}
+
 footer {
     text-align: center;
 }

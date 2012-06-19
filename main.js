@@ -37,8 +37,10 @@ var music_theory = (function() {
             })
         },
         interval_ord: function(from, add) {
-            // This is a really stupid function
-            return ((from + add) + desc_names.length) % desc_names.length
+            return (from + add + desc_names.length) % desc_names.length
+        },
+        diff_ord: function(from, to) {
+            return (to - from + desc_names.length) % desc_names.length
         },
         pretty_accidentals: function(s) {
             return s.replace('#', '\u266f').replace( 'b', '\u266d')
@@ -215,26 +217,44 @@ var music_theory = (function() {
         change: function(new_names) {
             if (typeof new_names == 'string')
                 new_names = music_theory.parse_notes(new_names)
-            var obj = $(this).data()
-            var old_ords = obj.scale_ords || []
             var new_ords = $.map(new_names, music_theory.note_ord)
+            var obj = $(this).data()
+            var old_names = obj.scale_ords || []
+            var old_ords = $.map(old_names, music_theory.note_ord)
+            var root_ord = new_ords[0]
 
             var that = $(this)
             function $el_with_ord(ord) {
                 return that.find('[data-ordinal=' + ord + ']')
             }
 
+            // Remove old elements
             $.map(old_ords.diff(new_ords), function(ord) {
                 $el_with_ord(ord).fadeOut()
             })
 
-            $.map(new_names, function(name) {
+            // Update highlighting
+            $.map(new_ords, function(ord) {
+                var degree = music_theory.diff_ord(root_ord, ord),
+                    $el = $el_with_ord(ord),
+                    new_class = 'degree-' + degree,
+                    old_class = $el.attr('data-degree-class') || ''
+
+                console.log(old_class, new_class)
+                if (old_class !== new_class) {
+                    $el.switchClass(old_class, new_class, 'fast')
+                    $el.attr('data-degree-class', new_class)
+                }
+            })
+
+            $.map(new_names.diff(old_names), function(name) {
+                var ord = music_theory.note_ord(name)
+                // Change the note names
                 var pretty = music_theory.pretty_accidentals(name)
-                var $el = $el_with_ord(music_theory.note_ord(name))
-                var $span = $el.children('span')
-                if ($el.first('span').text() != pretty) {
-                    if ($el.is(':visible'))
-                        $el.children('span').fadeOut(function(){
+                var $el = $el_with_ord(ord)
+                if ($el.first('span').text() !== pretty) {
+                    if($el.is(':visible'))
+                        $el.children('span').fadeOut(function() {
                             $(this).text(pretty).fadeIn()
                         })
                     else
@@ -246,7 +266,7 @@ var music_theory = (function() {
                 $el_with_ord(ord).fadeIn()
             })
 
-            obj.scale_ords = new_ords
+            obj.scale_ords = new_names
             $(this).data(obj)
             return this
         },
