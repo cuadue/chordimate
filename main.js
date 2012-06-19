@@ -44,6 +44,12 @@ var music_theory = (function() {
         },
         pretty_accidentals: function(s) {
             return s.replace('#', '\u266f').replace( 'b', '\u266d')
+        },
+        degree_from_index: function(i) {
+            i++ // indices are 0-index. Music is 1-indexed.
+            if (i % 2)
+                return i // Even indices only!
+            return 7 + i // 2 -> 9
         }
     }
 
@@ -208,7 +214,7 @@ var music_theory = (function() {
             div('fadeout', {
                 top: 0,
                 height: '100%',
-                right: 0,
+                right: -1,
                 left: fret_position(obj.num_frets) + '%'
             })
 
@@ -234,13 +240,15 @@ var music_theory = (function() {
             })
 
             // Update highlighting
-            $.map(new_ords, function(ord) {
-                var degree = music_theory.diff_ord(root_ord, ord),
+            $.each(new_ords, function(index, ord) {
+                var degree = music_theory.degree_from_index(index),
                     $el = $el_with_ord(ord),
+                    // Since we're exposing our programmer's model of scale
+                    // degrees to the outside world, conform to the musical
+                    // convention of 1-indexed degrees
                     new_class = 'degree-' + degree,
                     old_class = $el.attr('data-degree-class') || ''
 
-                console.log(old_class, new_class)
                 if (old_class !== new_class) {
                     $el.switchClass(old_class, new_class, 'fast')
                     $el.attr('data-degree-class', new_class)

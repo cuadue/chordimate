@@ -14,6 +14,7 @@ body {
     display: inline-block;
     width: 800px;
     height: 200px;
+    box-shadow: -6px 1px 10px black;
 }
 
 .chordimate .fadeout {
@@ -35,7 +36,7 @@ body {
     content: '';
     position: absolute;
     top: 0;
-    height: 6px;
+    height: 2%;
     width: 100%;
     background: #edd9a7;
     border-bottom: 1px solid #333;
@@ -45,7 +46,7 @@ body {
     content: '';
     position: absolute;
     bottom: 0;
-    height: 6px;
+    height: 2%;
     width: 100%;
     background: #edd9a7;
     border-top: 1px solid #333;
@@ -110,7 +111,19 @@ body {
     border-radius: 2px;
 }
 
-.chordimate .degree-0 {
+.chordimate .degree-1,
+.chordimate .degree-3,
+.chordimate .degree-5 {
+    background: red;
+}
+
+.chordimate .degree-9,
+.chordimate .degree-7 {
+    background: yellow;
+}
+
+.chordimate .degree-11,
+.chordimate .degree-13 {
     background: green;
 }
 
