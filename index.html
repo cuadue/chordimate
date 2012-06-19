@@ -35,6 +35,19 @@
             <h3 id=scale_label></h3>
             <div class=chordimate id=fretboard>
             </div>
+            <ul id=song-sequence></ul>
+            <hr>
+            <h3>Legend</h3>
+            <p>Scale degree</p>
+            <ul id=legend>
+                <li class='note-label degree-1'>root</li>
+                <li class='note-label degree-3'>3</li>
+                <li class='note-label degree-5'>dominant</li>
+                <li class='note-label degree-7'>7</li>
+                <li class='note-label degree-9'>9</li>
+                <li class='note-label degree-11'>subdominant</li>
+                <li class='note-label degree-13'>13</li>
+            </ul>
             <hr>
         </div>
         <hr>
@@ -52,35 +65,59 @@
         <script src='bootstrap/js/bootstrap.js'></script>
         <script src='main.js'></script>
         <style>
-            #little-fretboard {
-                width: 250px;
-                height: 100px;
+            #legend li, #song-sequence li{
+                display: inline-block;
+                margin: 5px;
+                min-width: 26px;
+                width: auto;
+                padding: 5px;
             }
-
-            #silly-fretboard {
-                width: 800px;
-                height: 150px;
+            #song-sequence .active {
+                background: blue;
+                color: white;
             }
         </style>
         <script>
             $(function() {
                 $('#fretboard').chordimate()
 
-                var scales = []
-                for(var i = 0; i < 12; i++) {
-                    var note = music_theory.note_name(i)
-                    scales.push([note + ' Major', music_theory.make_scale(note, 'major')])
-                    scales.push([note + ' minor', music_theory.make_scale(note, 'minor')])
-                }
+                var giant_steps = [
+                    ['B', 'Major'],
+                    ['G', 'Major'],
+                    ['Eb', 'Major'],
+                    ['G', 'Major'],
+                    ['Eb', 'Major'],
+                    ['B', 'Major'],
+                    ['Eb', 'Major'],
+                    ['G', 'Major'],
+                    ['B', 'Major'],
+                    ['Eb', 'Major'],
+                    ['B', 'Major']
+                ]
 
-                function random_scale() {
-                    var next = scales[Math.floor(Math.random() * scales.length)]
-                    $('#scale_label').text(next[0])
-                    $('#fretboard').chordimate('change', next[1])
-                    setTimeout(random_scale, 5000)
-                }
+                var index = 0
+                var scales = $.map(giant_steps, function(tuple) {
+                    var title = tuple[0] + ' ' + tuple[1]
+                    $('#song-sequence').append(
+                        $('<li/>').text(title).
+                        attr('data-sequence-step', index)
+                    )
+                    index ++ 
+                    return [title, music_theory.make_scale(tuple[0], tuple[1])]
+                })
 
-                random_scale()
+                var i = 0
+                function next_scale() {
+                    $('#scale_label').text(scales[2 * i])
+                    $('#fretboard').chordimate('change', scales[2 * i + 1])
+
+                    $('[data-sequence-step]').removeClass('active')
+                    $('[data-sequence-step=' + i + ']').addClass('active')
+
+                    i++
+                    i = i % giant_steps.length
+                }
+                setInterval(next_scale, 2500)
             })
         </script>
     </body>

@@ -32,7 +32,7 @@ var music_theory = (function() {
         make_scale: function(root, mode, desc) {
             desc = desc && desc || root[1] === 'b'
             var root_ord = methods.note_ord(root, desc)
-            return _modes[mode].map(function(interval) {
+            return _modes[mode.toLowerCase()].map(function(interval) {
                 return methods.note_name(root_ord + interval, desc)
             })
         },

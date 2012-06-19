@@ -86,7 +86,7 @@ body {
     color: black;
 }
 
-.chordimate .note-label {
+.note-label {
     margin: -13px 0 0 -30px;
     text-align: center;
     line-height: 26px;
@@ -111,19 +111,19 @@ body {
     border-radius: 2px;
 }
 
-.chordimate .degree-1,
-.chordimate .degree-3,
-.chordimate .degree-5 {
+.degree-1,
+.degree-3,
+.degree-5 {
     background: red;
 }
 
-.chordimate .degree-9,
-.chordimate .degree-7 {
+.degree-9,
+.degree-7 {
     background: yellow;
 }
 
-.chordimate .degree-11,
-.chordimate .degree-13 {
+.degree-11,
+.degree-13 {
     background: green;
 }
 
