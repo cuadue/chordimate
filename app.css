@@ -79,7 +79,7 @@ body {
     width: 26px;
     height: 26px;
     line-height: 26px;
-    vertical-align: center;
+    vertical-align: middle;
     text-align: center;
     font-size: 15px;
     color: black;
@@ -89,7 +89,7 @@ body {
     margin: -13px 0 0 -30px;
     text-align: center;
     line-height: 26px;
-    vertical-align: center;
+    vertical-align: middle;
     width: 26px;
     height: 26px;
     color: white;

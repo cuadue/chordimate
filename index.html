@@ -75,7 +75,7 @@
         </style>
         <script>
             $(function() {
-                $('#fretboard').chordimate()
+                $('#fretboard').chordimate({tuning: 'd a b g# bb f#'})
                 $('#little-fretboard').chordimate({ num_frets: 5 })
                 $('#silly-fretboard').chordimate({ num_frets: 25 })
 
@@ -88,7 +88,8 @@
                 }, function(k, v) {
                     $('#scale_list').append($('<button>').
                         attr('id', k).
-                        text(k).addClass('btn').click(function() {
+                        text(music_theory.pretty_accidentals(k)).
+                        addClass('btn').click(function() {
                             $('#fretboard').chordimate('change', v)
                         }))
                 })

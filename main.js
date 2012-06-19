@@ -7,12 +7,6 @@ Array.prototype.diff = function(a) {
     return this.filter(function(i) { return a.indexOf(i) < 0 });
 };
 
-function default_list_push(arr, key, val) {
-    list = arr[key] || []
-    list.push(val)
-    arr[key] = list
-}
-
 var music_theory = (function() {
     // Note names are case-sensitive! This means that any `b` is a
     // flat, and any `B` is the pitch a step above A. If this proves
@@ -45,6 +39,9 @@ var music_theory = (function() {
         interval_ord: function(from, add) {
             // This is a really stupid function
             return ((from + add) + desc_names.length) % desc_names.length
+        },
+        pretty_accidentals: function(s) {
+            return s.replace('#', '\u266f').replace( 'b', '\u266d')
         }
     }
 
@@ -201,7 +198,7 @@ var music_theory = (function() {
                         top: y + '%',
                     }).attr({
                         'data-ordinal': music_theory.interval_ord(open_ord, f)
-                    }).hide()
+                    }).append($('<span/>')).hide()
                 }
             })
 
@@ -226,19 +223,28 @@ var music_theory = (function() {
             function $el_with_ord(ord) {
                 return that.find('[data-ordinal=' + ord + ']')
             }
-            
+
             $.map(old_ords.diff(new_ords), function(ord) {
                 $el_with_ord(ord).fadeOut()
+            })
+
+            $.map(new_names, function(name) {
+                var pretty = music_theory.pretty_accidentals(name)
+                var $el = $el_with_ord(music_theory.note_ord(name))
+                var $span = $el.children('span')
+                if ($el.first('span').text() != pretty) {
+                    if ($el.is(':visible'))
+                        $el.children('span').fadeOut(function(){
+                            $(this).text(pretty).fadeIn()
+                        })
+                    else
+                        $el.children('span').text(pretty)
+                }
             })
 
             $.map(new_ords.diff(old_ords), function(ord) {
                 $el_with_ord(ord).fadeIn()
             })
-
-            $.map(new_names, function(name) {
-                $el_with_ord(music_theory.note_ord(name)).text(name)
-            })
-
 
             obj.scale_ords = new_ords
             $(this).data(obj)
