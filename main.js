@@ -7,12 +7,6 @@ Array.prototype.diff = function(a) {
     return this.filter(function(i) { return a.indexOf(i) < 0 });
 };
 
-function default_list_push(arr, key, val) {
-    list = arr[key] || []
-    list.push(val)
-    arr[key] = list
-}
-
 var music_theory = (function() {
     // Note names are case-sensitive! This means that any `b` is a
     // flat, and any `B` is the pitch a step above A. If this proves
@@ -38,13 +32,24 @@ var music_theory = (function() {
         make_scale: function(root, mode, desc) {
             desc = desc && desc || root[1] === 'b'
             var root_ord = methods.note_ord(root, desc)
-            return _modes[mode].map(function(interval) {
+            return _modes[mode.toLowerCase()].map(function(interval) {
                 return methods.note_name(root_ord + interval, desc)
             })
         },
         interval_ord: function(from, add) {
-            // This is a really stupid function
-            return ((from + add) + desc_names.length) % desc_names.length
+            return (from + add + desc_names.length) % desc_names.length
+        },
+        diff_ord: function(from, to) {
+            return (to - from + desc_names.length) % desc_names.length
+        },
+        pretty_accidentals: function(s) {
+            return s.replace('#', '\u266f').replace( 'b', '\u266d')
+        },
+        degree_from_index: function(i) {
+            i++ // indices are 0-index. Music is 1-indexed.
+            if (i % 2)
+                return i // Even indices only!
+            return 7 + i // 2 -> 9
         }
     }
 
@@ -200,7 +205,7 @@ var music_theory = (function() {
                         top: y + '%',
                     }).attr({
                         'data-ordinal': music_theory.interval_ord(open_ord, f)
-                    }).hide()
+                    }).append($('<span/>')).hide()
                 }
             })
 
@@ -208,7 +213,7 @@ var music_theory = (function() {
             div('fadeout', {
                 top: 0,
                 height: '100%',
-                right: 0,
+                right: -1,
                 left: fret_position(obj.num_frets) + '%'
             })
 
@@ -217,29 +222,58 @@ var music_theory = (function() {
         change: function(new_names) {
             if (typeof new_names == 'string')
                 new_names = music_theory.parse_notes(new_names)
-            var obj = $(this).data()
-            var old_ords = obj.scale_ords || []
             var new_ords = $.map(new_names, music_theory.note_ord)
+            var obj = $(this).data()
+            var old_names = obj.scale_ords || []
+            var old_ords = $.map(old_names, music_theory.note_ord)
+            var root_ord = new_ords[0]
 
             var that = $(this)
             function $el_with_ord(ord) {
                 return that.find('[data-ordinal=' + ord + ']')
             }
-            
+
+            // Remove old elements
             $.map(old_ords.diff(new_ords), function(ord) {
                 $el_with_ord(ord).fadeOut()
+            })
+
+            // Update highlighting
+            $.each(new_ords, function(index, ord) {
+                var degree = music_theory.degree_from_index(index),
+                    $el = $el_with_ord(ord),
+                    // Since we're exposing our programmer's model of scale
+                    // degrees to the outside world, conform to the musical
+                    // convention of 1-indexed degrees
+                    new_class = 'degree-' + degree,
+                    old_class = $el.attr('data-degree-class') || ''
+
+                if (old_class !== new_class) {
+                    $el.switchClass(old_class, new_class, 'fast')
+                    $el.attr('data-degree-class', new_class)
+                }
+            })
+
+            $.map(new_names.diff(old_names), function(name) {
+                var ord = music_theory.note_ord(name)
+                // Change the note names
+                var pretty = music_theory.pretty_accidentals(name)
+                var $el = $el_with_ord(ord)
+                if ($el.first('span').text() !== pretty) {
+                    if($el.is(':visible'))
+                        $el.children('span').fadeOut(function() {
+                            $(this).text(pretty).fadeIn()
+                        })
+                    else
+                        $el.children('span').text(pretty)
+                }
             })
 
             $.map(new_ords.diff(old_ords), function(ord) {
                 $el_with_ord(ord).fadeIn()
             })
 
-            $.map(new_names, function(name) {
-                $el_with_ord(music_theory.note_ord(name)).text(name)
-            })
-
-
-            obj.scale_ords = new_ords
+            obj.scale_ords = new_names
             $(this).data(obj)
             return this
         },

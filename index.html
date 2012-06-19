@@ -18,35 +18,36 @@
 
         <div id='main' class='container'>
             <h1>Chordimate Animates Guitar Chords</h1>
-            <div class=chordimate id=silly-fretboard></div>
             <p>Because the linguistic creativity of hackers is frequently
                limited to puns and portmanteaus, "Chordimate" is what you get
                from smushing together "chord" and "animate".</p>
             <p>Chordimate is a jQuery plugin which renders a guitar fretboard,
                displaying the name and position of a set of notes (e.g.
                scales, chords, modes, but herein called a "scale").  </p>
-            <div class=chordimate id=little-fretboard></div>
             <p>The fun part is animating it from one scale to another. It 
-               supports arbitrary tuning (at time of plugin initialization)
-               and can be dynamically rescaled using CSS alone. Styling is
-               all CSS so it's easily customizable without hitting
-               JavaScript.</p>
+               supports arbitrary tuning (at time of plugin initialization).
+               It scales nicely and dynamically. It's easily customized with
+               CSS alone. It can show any reasonable number of frets, correctly
+               spaced to match the real instrument.</p>
             <p>Chordimate is MIT licensed. <a
             href='https://github.com/cuadue/chordimate'>Git the source</a></p>
 
-            <h3>Interactive Animated Demo</h3>
-            <div class='btn-group' id='scale_list'>
-            </div>
-            <br>
-            <form class='form-inline' id='other_scale_form' action='#'>
-                <label>Something else (looking like "<tt>a b c db c# g</tt>"):
-                    <input type='text' id='other_scale'></input>
-                </label>
-                <input class='btn' type='button' id='show_other_scale' value='Do It!'></input>
-            </form>
-            <hr>
+            <h3 id=scale_label></h3>
             <div class=chordimate id=fretboard>
             </div>
+            <ul id=song-sequence></ul>
+            <hr>
+            <h3>Legend</h3>
+            <p>Scale degree</p>
+            <ul id=legend>
+                <li class='note-label degree-1'>root</li>
+                <li class='note-label degree-3'>3</li>
+                <li class='note-label degree-5'>dominant</li>
+                <li class='note-label degree-7'>7</li>
+                <li class='note-label degree-9'>9</li>
+                <li class='note-label degree-11'>subdominant</li>
+                <li class='note-label degree-13'>13</li>
+            </ul>
             <hr>
         </div>
         <hr>
@@ -60,51 +61,63 @@
             <a href='https://github.com/cuadue/chordimate'>Git Repository</a>
         </footer>
         <script src='jquery-1.7.2.js'></script>
+        <script src='jquery-ui-1.7.2.js'></script>
         <script src='bootstrap/js/bootstrap.js'></script>
         <script src='main.js'></script>
         <style>
-            #little-fretboard {
-                width: 250px;
-                height: 100px;
+            #legend li, #song-sequence li{
+                display: inline-block;
+                margin: 5px;
+                min-width: 26px;
+                width: auto;
+                padding: 5px;
             }
-
-            #silly-fretboard {
-                width: 800px;
-                height: 150px;
+            #song-sequence .active {
+                background: blue;
+                color: white;
             }
         </style>
         <script>
             $(function() {
                 $('#fretboard').chordimate()
-                $('#little-fretboard').chordimate({ num_frets: 5 })
-                $('#silly-fretboard').chordimate({ num_frets: 25 })
 
-                $.each({
-                    'C# Major': music_theory.make_scale('C#', 'major'),
-                    'C Major': music_theory.make_scale('C', 'major'),
-                    'Db Major': music_theory.make_scale('Db', 'major'),
-                    'G minor': music_theory.make_scale('G', 'minor', 'desc'),
-                    'Bb minor': music_theory.make_scale('Bb', 'minor', 'desc')
-                }, function(k, v) {
-                    $('#scale_list').append($('<button>').
-                        attr('id', k).
-                        text(k).addClass('btn').click(function() {
-                            $('#fretboard').chordimate('change', v)
-                        }))
+                var giant_steps = [
+                    ['B', 'Major'],
+                    ['G', 'Major'],
+                    ['Eb', 'Major'],
+                    ['G', 'Major'],
+                    ['Eb', 'Major'],
+                    ['B', 'Major'],
+                    ['Eb', 'Major'],
+                    ['G', 'Major'],
+                    ['B', 'Major'],
+                    ['Eb', 'Major'],
+                    ['B', 'Major']
+                ]
+
+                var index = 0
+                var scales = $.map(giant_steps, function(tuple) {
+                    var title = tuple[0] + ' ' + tuple[1]
+                    $('#song-sequence').append(
+                        $('<li/>').text(title).
+                        attr('data-sequence-step', index)
+                    )
+                    index ++ 
+                    return [title, music_theory.make_scale(tuple[0], tuple[1])]
                 })
 
-                $('[id="C Major"]').trigger('click')
+                var i = 0
+                function next_scale() {
+                    $('#scale_label').text(scales[2 * i])
+                    $('#fretboard').chordimate('change', scales[2 * i + 1])
 
-                $('#other_scale_form').submit(function(e) {
-                    e.preventDefault()
-                    $('#show_other_scale').trigger('click')
-                })
-                $('#show_other_scale').click(function() {
-                    $('#fretboard').chordimate('change', $('#other_scale').val())
-                })
-                $('#clear').click(function() {
-                    $('#fretboard').chordimate('clear')
-                })
+                    $('[data-sequence-step]').removeClass('active')
+                    $('[data-sequence-step=' + i + ']').addClass('active')
+
+                    i++
+                    i = i % giant_steps.length
+                }
+                setInterval(next_scale, 2500)
             })
         </script>
     </body>
